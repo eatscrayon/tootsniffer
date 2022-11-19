@@ -9,6 +9,7 @@ from html.parser import HTMLParser
 import datetime
 from datetime import datetime
 from datetime import timedelta
+import os
 
 today = datetime.today()
 fifteen_minutes_ago = today - timedelta(hours=1)
@@ -30,7 +31,15 @@ def strip_tags(html):
     s.feed(html)
     return s.get_data()
 
+COLOR = {
+    "GREY": "\033[90m",
+    "GREEN": "\033[92m",
+    "ENDC": "\033[0m",
+}
+
 def main():
+    
+    os.system("")  # enables ansi escape characters in terminal
     print("Reading Config")
     with open("config.yaml", "r") as stream:
         try:
@@ -53,11 +62,19 @@ def main():
                     break
                 date_and_content = []
                 date_and_content.append(item["created_at"])
-                toot  = "@{}".format(item["account"]["username"])
+                toot  = COLOR["GREEN"]
+                toot += "@{}".format(item["account"]["username"])
                 toot += " : "
+                toot += COLOR["ENDC"]
                 toot += strip_tags(item["content"])
-                toot += " "
+                toot += "\n"
+                toot += COLOR["GREY"]
                 toot += item["url"]
+                toot += COLOR["ENDC"]
+                toot += "\n"
+                toot +=" ↩️:" +str(item["replies_count"])
+                toot +=" 🔁:" +str(item["reblogs_count"])
+                toot +=" ❤️:" +str(item["favourites_count"])
                 toot += "\n"
                 date_and_content.append(toot)
                 if date_and_content not in queue:
